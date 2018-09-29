@@ -1,0 +1,22 @@
+{{!-- <script src="../public/assets/js/app.js"></script> --}}
+<header>
+    <h1>Poker Articles</h1>
+    <a href="/saved">Show Saved Articles</a>
+    <a href="/scrape">Scrape Upswing Articles</a>
+</header>
+
+<div class="container">
+    <ul class="articles" type='none'>
+        {{#each article}}
+            {{#unless this.isSaved}}
+                <li>
+                    <img class="thumbnail" src="{{this.img}}">
+                    <h2 class="title"><a href="{{this.link}}" target="_blank">{{this.title}}</a></h2><br>
+                    <p class="summary">{{this.summary}}<a href="{{this.link}}" target="_blank">Read More</a></p>
+                    <button id= "{{this._id}}" class="toggleSave">Save This Article.</button>
+                    <hr>
+                </li>
+            {{/unless}}    
+        {{/each}} 
+    </ul>
+</div>

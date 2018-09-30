@@ -1,7 +1,7 @@
 {{!-- <script src="../public/assets/js/app.js"></script> --}}
 
 <header>
-    <h1>Poker Articles</h1>
+    <h1>Poker Articles</h1> 
     <a href="/" class="mainArt">Back To Articles</a>
     {{!-- <a href="/scrape" class="scrape">Scrape Upswing Articles</a> --}}
 </header>
@@ -16,8 +16,8 @@
                         <img class="thumbnail" src="{{this.img}}">
                         <h2 class="title"><a href="{{this.link}}" target="_blank">{{this.title}}</a></h2><br>
                         <p class="summary">{{this.summary}}<a href="{{this.link}}" target="_blank">Read More</a></p>
-                        <button id= "{{this._id}}" class="toggleSave">Remove From Saved.</button>
-                        <button class="addNote" >Add Notes</button>
+                        <button id="{{this._id}}" class="toggleSave">Remove From Saved.</button>
+                        <button id="{{this._id}}" class="addNote" >Notes</button>
                         <hr>
                     </li>
                 {{/if}}   
@@ -33,16 +33,25 @@
                         <h2 class="modal-title">Add Note</h2>
                     </div>
                     <div class="modal-body">
+                            {{#each notes}}
+                            
+                        <ul>
+                            <li>{{this }}</li>
+                            <hr>
+                        </ul>
+                            {{/each}}
+
                         <h2 id="match-name" style="text-align: center"></h2>
                         <form>
                             <div class="form-group">
-                                <label for="message-text" class="col-form-label">Note:</label>
+                                <label for="message-text" class="col-form-label"></label>
                                 <textarea class="form-control" id="message-text"></textarea>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        
                         <button type="button" class="btn btn-default submit" data-dismiss="modal">Submit</button>
 
                     </div>

@@ -55,7 +55,10 @@ app.get("/saved", function(req, res) {
     db.Article.find({},function(err, data) {
        var hbsObject = {
            article: data
+        
+           
        };
+    //    console.log("()()()()()()()(",hbsObject.notes);
        res.render("saved", hbsObject);
     });
 });
@@ -95,12 +98,11 @@ app.get("/scrape", function(req, res) {
     });
 });
 
-// Route for grabbing a specific Article by id, populate it with it's note
 app.put("/articles/:id", function(req, res) {
     // console.log("======",req.body)
 
     db.Article.findOne({ _id: req.params.id })
-    // .populate("note")
+    // .populate("notes")
     .then(function(dbArticle) {
         // toggles T/F 
         dbArticle.isSaved = !dbArticle.isSaved;
@@ -117,28 +119,71 @@ app.put("/articles/:id", function(req, res) {
     });
 });
 
+app.get("/articles/:id", function(req, res) {
+    // console.log("======",req.body)
+    console.log("PARAMSID===========", req.params.id)
+
+    db.Article.findOne({ _id: req.params.id })
+    .populate("notes")
+    .then(function(dbArticle) {
+        // console.log(dbArticle);
+        var hbsObject = {
+            article: dbArticle,
+            note: dbArticle.notes
+            // buttonID: req.params.id
+          }
+          res.render("saved", hbsObject);
+          console.log("!!!!!!!!",hbsObject.note);
+        // // toggles T/F 
+        // dbArticle.isSaved = !dbArticle.isSaved;
+        // db.Article.updateOne({ _id: req.params.id }, {isSaved: dbArticle.isSaved}, function(err, updatedDbArticle){
+        //     console.log(updatedDbArticle);
+        //     // res.json(updatedDbArticle);
+        //     res.json(updatedDbArticle);
+        })
+        
+
+    .catch(function(err) {
+      // If an error occurred, send it to the client
+      res.json(err);
+    });
+});
+
 //if modal doesnt work load on new page with handlebars
 // need ID of article clicking on
 // /notes/:id for notes as a post
 
 
 app.post("/notes/:id", function(req, res) {
-    console.log(req.body);
+    console.log("=====",req.body);
     db.Note.create(req.body)
     .then(function(dbNote) {
+        console.log("DBNOTE=", dbNote);
+        console.log("PARAMSID===========", req.params.id)
       // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
       // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
       // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-      return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+      db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { notes: dbNote._id }}, { new: true }, function(err, updated){
+          console.log(updated.notes);
+          var hbsObject = {
+            notes: updated.notes
+        }
+      res.render("saved", hbsObject);
     })
-    .then(function(dbArticle) {
-      // If we were able to successfully update an Article, send it back to the client
-      res.json(dbArticle);
+     
     })
-    .catch(function(err) {
-      // If an error occurred, send it to the client
-      res.json(err);
-    });
+    // .then(function(dbArticle) {
+    //   // If we were able to successfully update an Article, send it back to the client
+    //   console.log("DBARTICLE=", dbArticle);
+    //     var hbsObject = {
+    //         notes: dbArticle
+    //     }
+    //   res.render("saved", hbsObject);
+    // })
+    // .catch(function(err) {
+    //   // If an error occurred, send it to the client
+    //   res.json(err);
+    // });
 });
 
 // Route for saving/updating an Article's associated Note
